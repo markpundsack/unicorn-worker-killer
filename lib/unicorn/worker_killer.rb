@@ -12,11 +12,8 @@ module Unicorn::WorkerKiller
     while true
       i += 1
       sig = :QUIT
-      if i > configuration.max_quit
-        sig = :TERM
-      elsif i > configuration.max_term
-        sig = :KILL
-      end
+      sig = :INT if i > configuration.max_quit
+      sig = :KILL if i > configuration.max_term
 
       logger.warn "#{self} send SIG#{sig} (pid: #{Process.pid}) alive: #{alive_sec} sec (trial #{i})"
       Process.kill sig, Process.pid
